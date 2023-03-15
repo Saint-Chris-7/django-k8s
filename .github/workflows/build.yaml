@@ -11,13 +11,31 @@ on:
 
 
 jobs:
-  test_django:
+  test_django_job:
     uses: Saint-Chris-7/django-k8s/.github/workflows/django-test.yaml@master
-  docker_build:
+  build:
     runs-on: ubuntu-latest
     needs: [test_django_job]
     env:
       SECRET_KEY: test-key-not-good-maybe-make-e-better
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - name: Install doctl
+      uses: digitalocean/action-doctl@v2
+      with:
+        token: ${{secrets.DO_API_KEY}}
+    - name: login to DO Registry with short-lived Saint-Chris-7/django-k8s/.github/workflows/django-test.yaml
+      run: doctl registry login --expiry-seconds 12000
+    - name: Build continer image
+      working-directory: ./web
+      run: |
+        docker buidl -f Dockerfile \
+        -t registry.digitalocean.com/chrisocean/django-k8s-web:latest \
+        -t registry.digitalocean.com/chrisocean/django-k8s-web: ${GITHUB_SHA::7} \
+        .
+    - name: Push image
+      run:
+        docker push registry.digitalocean.com/chrisocean/django-k8s-web --all-tags
+        
    
