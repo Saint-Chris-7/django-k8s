@@ -43,10 +43,10 @@ jobs:
         doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{env.CLUSTER_NAME}}
     - name: update deployment image
       run: |
-        kubectl set image deployment/django-k8s-web-deployment django-k8s-web=registry.digitalocean.com/chrisocean/django-k8s-web:${GITHUB_SHA::7}
+        kubectl set image deployment/django-k8-web-deployment django-k8s-web=registry.digitalocean.com/chrisocean/django-k8s-web:${GITHUB_SHA::7}
     - name: wait for rollout to finish
       run: |
-         kubectl rollout status deployment/django-k8s-web-deployment
+         kubectl rollout status deployment/django-k8-web-deployment
     - name: Migrate database command
       run: |
         export SINGLE_POD_NAME=$(kubectl get pod -l app=django-k8s-web-deployment -o jsonpath="{.items[0].metadata.name}")
