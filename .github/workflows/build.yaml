@@ -1,0 +1,24 @@
+name: Buidl Docker Container & push to Do Registry
+
+on:
+  workflow_call:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+  push_request:
+    branches:
+      - master
+      
+
+
+jobs:
+  test_django:
+    uses: Saint-Chris-7/django-k8s/.github/workflows/django-test.yaml@master
+  docker_build:
+    runs-on: ubuntu-latest
+    env:
+      SECRET_KEY: test-key-not-good-maybe-make-e-better
+    steps:
+    - uses: actions/checkout@v3
+   
