@@ -18,7 +18,7 @@ jobs:
     needs: [test_django_job]
     env:
       SECRET_KEY: test-key-not-good-maybe-make-e-better
-      CLUSTER_NAME: django-k8s
+      CLUSTER_NAME: django-k8
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
